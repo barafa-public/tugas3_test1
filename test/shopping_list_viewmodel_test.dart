@@ -41,7 +41,7 @@ void main() {
     final cardData = await viewModel.displayCardDataAsync();
 
     expect(cardData.first.name, "flores bajawa");
-    expect(cardData.first.status, "selesai");
+    expect(cardData.first.status, ProductStatus.finished);
   });
 
   test("error should exists when trying to display card data to an item that has no name", () async {

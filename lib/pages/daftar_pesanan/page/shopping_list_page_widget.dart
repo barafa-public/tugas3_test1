@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tugas3_test/infrastructure/inmemory_product_repository.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
+import 'package:tugas3_test/pages/daftar_pesanan/shopping_list_viewmodel.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/widget/item_card_widget.dart';
 import 'package:uuid/uuid.dart';
 
@@ -59,14 +60,43 @@ void showProductDetail(BuildContext context, Product product) {
 }
 
 class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
-  // final repository = InmemoryProductRepository();
-  final product = Product(name: "Flores bajawa", status: ProductStatus.unset);
+  late InmemoryProductRepository repository;
+  late ShoppingListViewmodel viewModel;
+
+  var cardData = [];
+
+  Future<void> _loadCardList() async {
+    repository = InmemoryProductRepository();
+
+    repository.insert(
+      Product(name: "flores bajawa", status: ProductStatus.finished),
+    );
+
+    viewModel = ShoppingListViewmodel(repository);
+
+    cardData = await viewModel.displayCardDataAsync();
+
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCardList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ItemCardWidget(product, (id) => showProductDetail(context, product)),
+        // ItemCardWidget(product, (id) => showProductDetail(context, product)),
+        ...cardData.map(
+          (product) => ItemCardWidget(
+            product,
+            (id) => showProductDetail(context, product),
+          ),
+        ),
       ],
     );
   }

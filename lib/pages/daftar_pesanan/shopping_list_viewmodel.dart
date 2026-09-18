@@ -19,7 +19,7 @@ class ShoppingListViewmodel {
     );
   }
 
-  Future<List<ShoppinglistCardData>> displayCardDataAsync() async {
+  Future<List<Product>> displayCardDataAsync() async {
     final productList = await repo.getAllAsync();
     isLoading = false;
 
@@ -31,6 +31,6 @@ class ShoppingListViewmodel {
       error = "a certain product has no status specified";
     }
 
-    return productList.map((product) => toCardData(product)).toList();
+    return productList;
   }
 }
