@@ -1,0 +1,1 @@
+enum ProductStatus { unset, finished }

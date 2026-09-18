@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tugas3_test/infrastructure/inmemory_product_repository.dart';
-import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
-import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/widget/item_card_widget.dart';
-import 'package:uuid/uuid.dart';
 
 class ShoppingListPageWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ShoppingListPageWidgetState();
 }
 
-void showProductDetail(BuildContext context, Product product) {
+void showProductDetail(BuildContext context) {
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -34,23 +30,7 @@ void showProductDetail(BuildContext context, Product product) {
               padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(product.name, style: TextStyle(fontSize: 25)),
-                  Text("unset", style: TextStyle(fontSize: 12)),
-                  Text(
-                    "tanggal pemesanan ${product.createdAt ?? DateTime.now()}",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  Text(
-                    "terakhir di update pada tanggal ${product.updatedAt ?? DateTime.now()}",
-                    style: TextStyle(fontSize: 12),
-                  ),
-
-                  Text(
-                    "tanggal dikirim ${product.completedAt ?? DateTime.now()}",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ],
+                children: [Text("scrollable item here")],
               ),
             ),
           ),
@@ -59,15 +39,10 @@ void showProductDetail(BuildContext context, Product product) {
 }
 
 class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
-  // final repository = InmemoryProductRepository();
-  final product = Product(name: "Flores bajawa", status: ProductStatus.unset);
-
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        ItemCardWidget(product, (id) => showProductDetail(context, product)),
-      ],
+      children: [ItemCardWidget("flores bajawa", "diproses", () {})],
     );
   }
 }

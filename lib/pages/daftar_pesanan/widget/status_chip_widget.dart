@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas3_test/pages/daftar_pesanan/entity/status_enum.dart';
+import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 
 class StatusChipWidget extends StatelessWidget {
   StatusChipWidget(this.productStatus, {super.key});

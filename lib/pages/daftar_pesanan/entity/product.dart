@@ -1,4 +1,4 @@
-import 'package:tugas3_test/pages/daftar_pesanan/entity/status_enum.dart';
+import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 import 'package:uuid/uuid.dart';
 
 class Product {
