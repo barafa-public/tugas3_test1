@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tugas3_test/pages/daftar_pesanan/shopping_list_page_widget.dart';
 
 /// Tab default yang dibuka saat masuk ke [BelanjakuPage].
 enum BelanjakuTab { kalkulator, daftar }
@@ -54,13 +53,17 @@ class _BelanjakuPageState extends State<BelanjakuPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
+        children: const [
           _ComingSoon(
             icon: Icons.calculate_outlined,
             title: 'Kalkulator Belanja',
             message: 'Fitur kalkulator belum tersedia, segera hadir.',
           ),
-          ShoppingListPageWidget(),
+          _ComingSoon(
+            icon: Icons.list_alt_outlined,
+            title: 'Daftar Pesanan',
+            message: 'Fitur CRUD daftar pesanan belum tersedia, segera hadir.',
+          ),
         ],
       ),
     );
