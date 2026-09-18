@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../services/auth_service.dart';
+import '../main_shell_page.dart';
 import 'register_page.dart';
-
-// TODO: sesuaikan path ini setelah main_shell_page.dart dibuat
-// import '../main_shell_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -44,12 +42,10 @@ class _LoginPageState extends State<LoginPage> {
 
       if (!mounted) return;
 
-      // TODO: ganti dengan navigasi ke MainShellPage setelah dibuat
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(builder: (_) => const MainShellPage()),
-      // );
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Login berhasil')));
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const MainShellPage()),
+        (route) => false,
+      );
     } on AuthException catch (e) {
       _showError(e.message);
     } catch (e) {
