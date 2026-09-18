@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
+import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
+import 'package:tugas3_test/pages/daftar_pesanan/widget/status_chip_widget.dart';
 import 'package:uuid/uuid.dart';
 
 class ItemCardWidget extends StatelessWidget {
@@ -21,7 +23,7 @@ class ItemCardWidget extends StatelessWidget {
             child: Row(
               spacing: 12,
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [Text(product.status.toString()), Text(product.name)],
+              children: [StatusChipWidget(product.status), Text(product.name)],
             ),
           ),
         ),

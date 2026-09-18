@@ -9,8 +9,17 @@ class StatusChipWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsetsGeometry.all(50),
-      child: Text(productStatus.toString()),
+      padding: EdgeInsetsGeometry.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(100)),
+        color: switch (productStatus) {
+          ProductStatus.unset => Colors.grey,
+          ProductStatus.processed => Colors.amber,
+          ProductStatus.onDelivery => Colors.blue,
+          ProductStatus.finished => Colors.green,
+        },
+      ),
+      child: Text(productStatus.getDisplayString()),
     );
   }
 }

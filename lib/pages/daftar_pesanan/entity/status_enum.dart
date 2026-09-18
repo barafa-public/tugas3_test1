@@ -1,1 +1,1 @@
-enum ProductStatus { unset }
+enum ProductStatus { unset, processed, finished }
