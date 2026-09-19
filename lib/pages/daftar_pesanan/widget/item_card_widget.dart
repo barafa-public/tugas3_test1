@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/widget/status_chip_widget.dart';
 import 'package:tugas3_test/utils/currency_formatter.dart';
-import 'package:uuid/uuid.dart';
 
 class ItemCardWidget extends StatelessWidget {
   const ItemCardWidget(this.product, this.onTap, {super.key});
 
   final Order product;
-  final void Function(Uuid productId) onTap;
+  final void Function(String productId) onTap;
 
   // Local-only styling to match _MenuTile in home_page.dart.
   static const _contentPadding = EdgeInsets.symmetric(

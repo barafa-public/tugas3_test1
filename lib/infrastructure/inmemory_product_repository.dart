@@ -1,6 +1,5 @@
 import 'package:tugas3_test/infrastructure/product_repository_interface.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
-import 'package:uuid/uuid.dart';
 
 class InmemoryProductRepository implements ProductRepositoryInterface {
   InmemoryProductRepository(this.loadingTimeInMiliseconds);
@@ -13,7 +12,7 @@ class InmemoryProductRepository implements ProductRepositoryInterface {
   }
 
   @override
-  Future<Order?> getbyIdAsync(Uuid productId) async {
+  Future<Order?> getbyIdAsync(String productId) async {
     await Future.pause(Duration(milliseconds: loadingTimeInMiliseconds));
     return rows.where((product) => product.id == productId).first;
   }

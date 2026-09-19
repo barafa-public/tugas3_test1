@@ -174,17 +174,14 @@ class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
   var cardData = <Order>[];
 
   Future<void> _loadCardList() async {
-    final useInMemory = true;
+    final useInMemory = false;
     repository = useInMemory
+        // ignore: dead_code
         ? InmemoryProductRepository(5000)
         // ignore: dead_code
         : PostgresProductRepository();
 
     viewModel = ShoppingListViewmodel(repository);
-
-    repository.insert(
-      Order(name: "flores bajawa", status: ProductStatus.processed),
-    );
 
     await _refreshCardList();
   }

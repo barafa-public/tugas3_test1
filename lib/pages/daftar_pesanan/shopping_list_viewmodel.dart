@@ -38,8 +38,10 @@ class ShoppingListViewmodel {
   Future<void> markAsFinished(Order order) async {
     var updatedOrder = order;
     updatedOrder.status = ProductStatus.finished;
+    updatedOrder.updatedAt = DateTime.now();
+    updatedOrder.completedAt = DateTime.now();
 
-    await repo.update(order);
+    await repo.update(updatedOrder);
     isLoading = false;
   }
 }
