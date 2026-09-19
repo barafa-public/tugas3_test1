@@ -1,14 +1,13 @@
-import 'package:tugas3_test/infrastructure/inmemory_product_repository.dart';
+import 'package:tugas3_test/infrastructure/product_repository_interface.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/value_object/shoppinglist_card_data.dart';
-import 'package:uuid/uuid.dart';
 
 class ShoppingListViewmodel {
   var isLoading = true;
   var error = "";
 
-  InmemoryProductRepository repo;
+  ProductRepositoryInterface repo;
 
   ShoppingListViewmodel(this.repo);
 

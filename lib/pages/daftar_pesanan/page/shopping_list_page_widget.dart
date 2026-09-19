@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tugas3_test/infrastructure/inmemory_product_repository.dart';
+import 'package:tugas3_test/infrastructure/postgres_product_repository.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
-import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/shopping_list_viewmodel.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/widget/item_card_widget.dart';
-import 'package:uuid/uuid.dart';
 
 class ShoppingListPageWidget extends StatefulWidget {
   @override
@@ -66,11 +65,11 @@ class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
   var cardData = [];
 
   Future<void> _loadCardList() async {
-    repository = InmemoryProductRepository();
-
-    repository.insert(
-      Product(name: "flores bajawa", status: ProductStatus.finished),
-    );
+    final useInMemory = true;
+    repository = useInMemory
+        ? InmemoryProductRepository(5)
+        // ignore: dead_code
+        : PostgresProductRepository() as InmemoryProductRepository;
 
     viewModel = ShoppingListViewmodel(repository);
 
@@ -88,9 +87,16 @@ class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (viewModel.isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (cardData.isEmpty) {
+      return Center(child: Text("List pesanan kosong"));
+    }
+
     return Column(
       children: [
-        // ItemCardWidget(product, (id) => showProductDetail(context, product)),
         ...cardData.map(
           (product) => ItemCardWidget(
             product,
