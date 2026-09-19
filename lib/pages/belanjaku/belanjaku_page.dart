@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/page/shopping_list_page_widget.dart';
 
+import 'widgets/budget_calculator_view.dart';
+
 /// Tab default yang dibuka saat masuk ke [BelanjakuPage].
 enum BelanjakuTab { kalkulator, daftar }
 
 /// Halaman Belanjaku, berisi 2 tab: Kalkulator dan Daftar Pesanan.
 ///
-/// TODO: implementasikan Kalkulator (hitung estimasi belanja) dan
-/// Daftar Pesanan (CRUD ke tabel `orders`). Untuk sekarang kedua tab
-/// masih placeholder, sesuai arahan: bagian Profil dulu yang jadi,
-/// menu lain dikosongkan dulu.
+/// Tab Kalkulator (Menu Pesanan) sudah pakai [BudgetCalculatorView].
+///
+/// TODO (Fariz): implementasikan tab Daftar Pesanan (CRUD status
+/// cart/completed ke tabel `orders`). Masih placeholder untuk sekarang.
 class BelanjakuPage extends StatefulWidget {
   final BelanjakuTab initialTab;
 
@@ -54,14 +56,7 @@ class _BelanjakuPageState extends State<BelanjakuPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _ComingSoon(
-            icon: Icons.calculate_outlined,
-            title: 'Kalkulator Belanja',
-            message: 'Fitur kalkulator belum tersedia, segera hadir.',
-          ),
-          ShoppingListPageWidget(),
-        ],
+        children: const [BudgetCalculatorView(), ShoppingListPageWidget()],
       ),
     );
   }

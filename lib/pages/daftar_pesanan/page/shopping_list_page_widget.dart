@@ -4,6 +4,7 @@ import 'package:tugas3_test/infrastructure/postgres_product_repository.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/shopping_list_viewmodel.dart';
+import 'package:tugas3_test/pages/daftar_pesanan/widget/app_bottom_sheet.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/widget/item_card_widget.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/widget/status_chip_widget.dart';
 import 'package:tugas3_test/utils/currency_formatter.dart';
@@ -16,119 +17,86 @@ class ShoppingListPageWidget extends StatefulWidget {
 }
 
 void showProductDetail(BuildContext context, Product product) {
-  showModalBottomSheet<void>(
+  showAppBottomSheet<void>(
     context: context,
-    isScrollControlled: true,
-    enableDrag: true,
-    isDismissible: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-    builder: (BuildContext sheetContext) => DraggableScrollableSheet(
-      initialChildSize: 0.5,
-      minChildSize: 0.25,
-      maxChildSize: 0.9,
-      expand: false,
-      snap: true,
-      snapSizes: const [0.25, 0.5, 0.9],
-      builder: (BuildContext context, ScrollController scrollController) =>
-          SingleChildScrollView(
-            controller: scrollController,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 16,
+    child: Builder(
+      builder: (BuildContext innerContext) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.deepPurple.shade50,
+                child: const Icon(
+                  Icons.shopping_bag_outlined,
+                  color: Colors.deepPurple,
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                    ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  product.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.deepPurple.shade50,
-                        child: const Icon(
-                          Icons.shopping_bag_outlined,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          product.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      StatusChipWidget(product.status),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  const Divider(),
-                  const SizedBox(height: 12),
-                  _DetailRow(
-                    icon: Icons.inventory_2_outlined,
-                    label: 'Jumlah',
-                    value: '${product.quantity}',
-                  ),
-                  const SizedBox(height: 12),
-                  _DetailRow(
-                    icon: Icons.payments_outlined,
-                    label: 'Harga satuan',
-                    value: formatRupiah(product.price),
-                  ),
-                  const SizedBox(height: 12),
-                  _DetailRow(
-                    icon: Icons.calendar_month_outlined,
-                    label: 'Tanggal pemesanan',
-                    value: product.createdAt == null
-                        ? '-'
-                        : formatTanggalPendek(product.createdAt!),
-                  ),
-                  const SizedBox(height: 12),
-                  _DetailRow(
-                    icon: Icons.update_outlined,
-                    label: 'Terakhir diupdate',
-                    value: product.updatedAt == null
-                        ? '-'
-                        : formatTanggalPendek(product.updatedAt!),
-                  ),
-                  const SizedBox(height: 12),
-                  _DetailRow(
-                    icon: Icons.local_shipping_outlined,
-                    label: 'Tanggal dikirim',
-                    value: product.completedAt == null
-                        ? '-'
-                        : formatTanggalPendek(product.completedAt!),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                    ),
-                    child: const Text('Tutup'),
-                  ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(width: 12),
+              StatusChipWidget(product.status),
+            ],
           ),
+          const SizedBox(height: 12),
+          const Divider(),
+          const SizedBox(height: 12),
+          _DetailRow(
+            icon: Icons.inventory_2_outlined,
+            label: 'Jumlah',
+            value: '${product.quantity}',
+          ),
+          const SizedBox(height: 12),
+          _DetailRow(
+            icon: Icons.payments_outlined,
+            label: 'Harga satuan',
+            value: formatRupiah(product.price),
+          ),
+          const SizedBox(height: 12),
+          _DetailRow(
+            icon: Icons.calendar_month_outlined,
+            label: 'Tanggal pemesanan',
+            value: product.createdAt == null
+                ? '-'
+                : formatTanggalPendek(product.createdAt!),
+          ),
+          const SizedBox(height: 12),
+          _DetailRow(
+            icon: Icons.update_outlined,
+            label: 'Terakhir diupdate',
+            value: product.updatedAt == null
+                ? '-'
+                : formatTanggalPendek(product.updatedAt!),
+          ),
+          const SizedBox(height: 12),
+          _DetailRow(
+            icon: Icons.local_shipping_outlined,
+            label: 'Tanggal dikirim',
+            value: product.completedAt == null
+                ? '-'
+                : formatTanggalPendek(product.completedAt!),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => Navigator.of(innerContext).pop(),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            child: const Text('Tutup'),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -157,10 +125,7 @@ class _DetailRow extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 2),
               Text(
@@ -194,7 +159,7 @@ class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
     viewModel = ShoppingListViewmodel(repository);
 
     repository.insert(
-      Product(name: "flores bajawa", status: ProductStatus.finished),
+      Product(name: "flores bajawa", status: ProductStatus.processed),
     );
 
     cardData = await viewModel!.displayCardDataAsync();

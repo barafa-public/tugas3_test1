@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tugas3_test/pages/home/widgets/menu_tile.dart';
 
 import '../../services/auth_service.dart';
 import '../auth/login_page.dart';
@@ -63,7 +64,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
             ],
-            _MenuTile(
+            MenuTile(
               icon: Icons.person_outline,
               title: 'Profil Saya',
               subtitle: 'Data akun & ringkasan belanja kamu',
@@ -71,7 +72,7 @@ class HomePage extends StatelessWidget {
                   .push(MaterialPageRoute(builder: (_) => const ProfilePage())),
             ),
             const SizedBox(height: 12),
-            _MenuTile(
+            MenuTile(
               icon: Icons.calculate_outlined,
               title: 'Belanjaku - Kalkulator',
               subtitle: 'Hitung estimasi belanja',
@@ -83,7 +84,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            _MenuTile(
+            MenuTile(
               icon: Icons.list_alt_outlined,
               title: 'Belanjaku - Daftar Pesanan',
               subtitle: 'Kelola daftar & status pesanan',
@@ -95,7 +96,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            _MenuTile(
+            MenuTile(
               icon: Icons.calendar_month_outlined,
               title: 'Konversi Tanggal',
               subtitle: 'Konversi Masehi ke Hijriah',
@@ -107,7 +108,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            _MenuTile(
+            MenuTile(
               icon: Icons.event_note_outlined,
               title: 'Konversi Kalender',
               subtitle: 'Hitung Weton',
@@ -120,40 +121,6 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _MenuTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  const _MenuTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 8.0,
-        ),
-        leading: CircleAvatar(
-          backgroundColor: Colors.deepPurple.shade50,
-          child: Icon(icon, color: Colors.deepPurple),
-        ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
       ),
     );
   }
