@@ -67,9 +67,8 @@ class HomePage extends StatelessWidget {
               icon: Icons.person_outline,
               title: 'Profil Saya',
               subtitle: 'Data akun & ringkasan belanja kamu',
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ProfilePage()),
-              ),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const ProfilePage())),
             ),
             const SizedBox(height: 12),
             _MenuTile(
@@ -78,9 +77,8 @@ class HomePage extends StatelessWidget {
               subtitle: 'Hitung estimasi belanja',
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => const BelanjakuPage(
-                    initialTab: BelanjakuTab.kalkulator,
-                  ),
+                  builder: (_) =>
+                      const BelanjakuPage(initialTab: BelanjakuTab.kalkulator),
                 ),
               ),
             ),
