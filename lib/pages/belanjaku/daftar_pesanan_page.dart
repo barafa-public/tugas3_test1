@@ -3,26 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:tugas3_test/models/order_model.dart';
 import 'package:tugas3_test/services/order_service.dart';
 import 'package:tugas3_test/utils/currency_formatter.dart';
-import 'order_card.dart';
-import '../order_form_page.dart';
+import 'widgets/order_card.dart';
 
-/// Isi tab "Kalkulator" (Menu Pesanan) di `BelanjakuPage`.
+/// Menu Daftar Pesanan.
 ///
-/// Fungsinya: user input barang (nama, harga, jumlah) lewat
-/// [OrderFormPage], item otomatis masuk sebagai pesanan berstatus `cart`,
-/// dan halaman ini menampilkan daftarnya sekaligus menghitung total
-/// belanja secara otomatis (kalkulator).
-///
-/// Item yang sudah masuk sini akan otomatis muncul juga di tab
-/// "Daftar Pesanan" (punya Fariz) selama statusnya masih `cart`.
-class BudgetCalculatorView extends StatefulWidget {
-  const BudgetCalculatorView({super.key});
+/// Menampilkan pesanan yang masih berstatus `cart` (belum dibayar).
+/// User bisa langsung "Bayar" di sini -> status pesanan berubah jadi
+/// `completed`, item otomatis hilang dari daftar ini dan pindah ke
+/// Menu History Pesanan.
+class DaftarPesananPage extends StatefulWidget {
+  const DaftarPesananPage({super.key});
 
   @override
-  State<BudgetCalculatorView> createState() => _BudgetCalculatorViewState();
+  State<DaftarPesananPage> createState() => _DaftarPesananPageState();
 }
 
-class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
+class _DaftarPesananPageState extends State<DaftarPesananPage> {
   final _orderService = OrderService();
   late Future<List<OrderModel>> _future;
 
@@ -36,13 +32,6 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
     return _orderService.getOrders(status: OrderStatus.cart);
   }
 
-  /// Muat ulang daftar item cart.
-  ///
-  /// Selalu cek [mounted] sebelum `setState` — method ini sering dipanggil
-  /// setelah `await` (habis nutup halaman form / dialog), dan di rentang
-  /// waktu itu widget-nya bisa saja sudah di-dispose (mis. user keburu
-  /// pindah tab/halaman). Manggil `setState` setelah dispose bakal
-  /// nge-throw error.
   Future<void> _refresh() async {
     if (!mounted) return;
     final next = _load();
@@ -50,12 +39,42 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
     await next;
   }
 
-  Future<void> _openForm({OrderModel? existing}) async {
-    final result = await Navigator.of(context).push<OrderModel>(
-      MaterialPageRoute(builder: (_) => OrderFormPage(existingOrder: existing)),
+  Future<void> _confirmPay(OrderModel order) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Bayar Pesanan'),
+        content: Text(
+          'Bayar "${order.name}" sebesar ${formatRupiah(order.subtotal)}?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Bayar'),
+          ),
+        ],
+      ),
     );
-    if (!mounted) return;
-    if (result != null) _refresh();
+
+    if (confirmed != true) return;
+
+    try {
+      await _orderService.markCompleted(order.id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('"${order.name}" berhasil dibayar')),
+      );
+      _refresh();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal membayar "${order.name}": ${_friendlyError(e)}')),
+      );
+    }
   }
 
   Future<void> _confirmDelete(OrderModel order) async {
@@ -63,7 +82,7 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Hapus Item'),
-        content: Text('Hapus "${order.name}" dari daftar belanja?'),
+        content: Text('Hapus "${order.name}" dari daftar pesanan?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -95,6 +114,7 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Daftar Pesanan')),
       body: FutureBuilder<List<OrderModel>>(
         future: _future,
         builder: (context, snapshot) {
@@ -119,7 +139,7 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
                     Text(
                       isSessionExpired
                           ? 'Sesi login kamu sudah berakhir. Silakan login ulang.'
-                          : 'Gagal memuat daftar belanja: ${_friendlyError(snapshot.error)}',
+                          : 'Gagal memuat daftar pesanan: ${_friendlyError(snapshot.error)}',
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 12),
@@ -140,42 +160,21 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
             onRefresh: _refresh,
             child: Column(
               children: [
-                _TotalCard(total: total, itemCount: orders.length),
+                if (orders.isNotEmpty) _TotalCard(total: total, itemCount: orders.length),
                 Expanded(
                   child: orders.isEmpty
                       ? _buildEmptyState()
                       : ListView.builder(
-                          padding: const EdgeInsets.only(top: 8, bottom: 88),
+                          padding: const EdgeInsets.only(top: 8, bottom: 16),
                           itemCount: orders.length,
                           itemBuilder: (context, index) {
                             final order = orders[index];
-                            return Dismissible(
-                              key: ValueKey(order.id),
-                              direction: DismissDirection.endToStart,
-                              background: Container(
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.shade400,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(Icons.delete, color: Colors.white),
-                              ),
-                              confirmDismiss: (_) async {
-                                await _confirmDelete(order);
-                                // Konfirmasi & hapus sudah ditangani manual di
-                                // atas, jadi widget cukup rebuild lewat _refresh.
-                                return false;
-                              },
-                              child: OrderCard(
-                                order: order,
-                                onTap: () => _openForm(existing: order),
-                                onDelete: () => _confirmDelete(order),
-                              ),
+                            return OrderCard(
+                              order: order,
+                              onToggleStatus: () => _confirmPay(order),
+                              onDelete: () => _confirmDelete(order),
+                              completeTooltip: 'Bayar',
+                              completeIcon: Icons.payment_outlined,
                             );
                           },
                         ),
@@ -184,11 +183,6 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(),
-        icon: const Icon(Icons.add),
-        label: const Text('Tambah Item'),
       ),
     );
   }
@@ -206,17 +200,16 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.shopping_cart_outlined,
-                        size: 56, color: Colors.grey.shade400),
+                    Icon(Icons.list_alt_outlined, size: 56, color: Colors.grey.shade400),
                     const SizedBox(height: 12),
                     Text(
-                      'Belum ada barang di daftar belanja',
+                      'Belum ada pesanan yang menunggu pembayaran',
                       style: TextStyle(color: Colors.grey.shade600),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Ketuk "Tambah Item" untuk mulai menghitung belanjaanmu',
+                      'Tambahkan barang lewat Menu Pesanan terlebih dahulu',
                       style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
@@ -231,9 +224,6 @@ class _BudgetCalculatorViewState extends State<BudgetCalculatorView> {
   }
 }
 
-/// Ubah exception teknis (PostgrestException, koneksi, dll) jadi pesan
-/// singkat yang cukup dimengerti user, sambil tetap ke-print ke console
-/// buat debugging kalau perlu.
 String _friendlyError(Object? error) {
   final text = error.toString().toLowerCase();
   if (text.contains('socketexception') ||
@@ -244,7 +234,6 @@ String _friendlyError(Object? error) {
   if (text.contains('timeout')) {
     return 'koneksi terlalu lama, coba lagi.';
   }
-  // Fallback: tampilkan pesan asli tapi dipotong biar gak kepanjangan.
   final raw = error.toString();
   return raw.length > 120 ? '${raw.substring(0, 120)}...' : raw;
 }
@@ -264,7 +253,7 @@ class _TotalCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(Icons.calculate_outlined,
+            Icon(Icons.receipt_long_outlined,
                 color: Theme.of(context).colorScheme.onPrimaryContainer),
             const SizedBox(width: 12),
             Expanded(
@@ -272,7 +261,7 @@ class _TotalCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Total Estimasi Belanja',
+                    'Total Belum Dibayar',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontSize: 13,

@@ -29,7 +29,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Belanjaku',
-      home: session != null ? MainShellPage() : const LoginPage(),
+      home: session != null ? const MainShellPage() : const LoginPage(),
     );
   }
 }

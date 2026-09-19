@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tugas3_test/pages/bantuan/bantuan.dart';
 
 import 'home/home_page.dart';
 
@@ -14,6 +13,6 @@ class MainShellPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomePage();
+    return const HomePage();
   }
 }

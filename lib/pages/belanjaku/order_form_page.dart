@@ -11,7 +11,7 @@ import 'package:tugas3_test/utils/currency_formatter.dart';
 ///
 /// Setelah berhasil simpan, halaman ini akan `Navigator.pop` sambil
 /// membawa [OrderModel] hasilnya, supaya halaman pemanggil (mis.
-/// `BudgetCalculatorView`) tinggal refresh list-nya.
+/// `PesananPage`) tinggal refresh list-nya.
 class OrderFormPage extends StatefulWidget {
   final OrderModel? existingOrder;
 

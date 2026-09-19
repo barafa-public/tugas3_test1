@@ -25,6 +25,12 @@ class OrderCard extends StatelessWidget {
   /// Tampilkan badge status (Keranjang / Selesai) di pojok kanan atas card.
   final bool showStatusBadge;
 
+  /// Tooltip & ikon kustom untuk tombol [onToggleStatus] saat item masih
+  /// `cart` (misal diubah jadi "Bayar" di Menu Daftar Pesanan). Kalau null,
+  /// pakai default ("Tandai selesai" + ikon centang).
+  final String? completeTooltip;
+  final IconData? completeIcon;
+
   const OrderCard({
     super.key,
     required this.order,
@@ -32,6 +38,8 @@ class OrderCard extends StatelessWidget {
     this.onDelete,
     this.onToggleStatus,
     this.showStatusBadge = false,
+    this.completeTooltip,
+    this.completeIcon,
   });
 
   @override
@@ -105,9 +113,11 @@ class OrderCard extends StatelessWidget {
                 IconButton(
                   tooltip: isCompleted
                       ? 'Kembalikan ke keranjang'
-                      : 'Tandai selesai',
+                      : (completeTooltip ?? 'Tandai selesai'),
                   icon: Icon(
-                    isCompleted ? Icons.undo : Icons.check_circle_outline,
+                    isCompleted
+                        ? Icons.undo
+                        : (completeIcon ?? Icons.check_circle_outline),
                     color: isCompleted
                         ? Colors.grey.shade600
                         : Colors.green.shade700,

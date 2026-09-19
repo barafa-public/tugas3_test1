@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => MainShellPage()),
+        MaterialPageRoute(builder: (_) => const MainShellPage()),
         (route) => false,
       );
     } on AuthException catch (e) {
