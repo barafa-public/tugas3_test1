@@ -26,7 +26,7 @@ class MenuTile extends StatelessWidget {
           child: Icon(icon, color: Colors.deepPurple),
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: subtitle.isEmpty ? null : Text(subtitle),
+        subtitle: subtitle == "" ? Text(subtitle) : null,
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

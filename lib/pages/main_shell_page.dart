@@ -14,6 +14,6 @@ class MainShellPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomePage();
+    return HelpPageWidget();
   }
 }
