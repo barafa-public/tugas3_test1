@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tugas3_test/models/order_model.dart';
 import 'package:tugas3_test/services/order_service.dart';
 import 'package:tugas3_test/utils/currency_formatter.dart';
+
 import 'widgets/order_card.dart';
 import 'order_form_page.dart';
 import 'product_catalog_page.dart';
@@ -44,7 +45,9 @@ class _PesananPageState extends State<PesananPage> {
   Future<void> _refresh() async {
     if (!mounted) return;
     final next = _load();
-    setState(() => _future = next);
+    setState(() {
+      _future = next;
+    });
     await next;
   }
 
@@ -53,15 +56,15 @@ class _PesananPageState extends State<PesananPage> {
       MaterialPageRoute(builder: (_) => OrderFormPage(existingOrder: existing)),
     );
     if (!mounted) return;
-    if (result != null) _refresh();
+    if (result != null) await _refresh();
   }
 
   Future<void> _openCatalog() async {
-    final added = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => const ProductCatalogPage()),
-    );
+    final added = await Navigator.of(
+      context,
+    ).push<bool>(MaterialPageRoute(builder: (_) => const ProductCatalogPage()));
     if (!mounted) return;
-    if (added == true) _refresh();
+    if (added == true) await _refresh();
   }
 
   Future<void> _confirmDelete(OrderModel order) async {
@@ -93,7 +96,11 @@ class _PesananPageState extends State<PesananPage> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menghapus "${order.name}": ${_friendlyError(e)}')),
+        SnackBar(
+          content: Text(
+            'Gagal menghapus "${order.name}": ${_friendlyError(e)}',
+          ),
+        ),
       );
     }
   }
@@ -132,7 +139,9 @@ class _PesananPageState extends State<PesananPage> {
                     const SizedBox(height: 12),
                     FilledButton(
                       onPressed: _refresh,
-                      child: Text(isSessionExpired ? 'Muat Ulang' : 'Coba Lagi'),
+                      child: Text(
+                        isSessionExpired ? 'Muat Ulang' : 'Coba Lagi',
+                      ),
                     ),
                   ],
                 ),
@@ -161,7 +170,9 @@ class _PesananPageState extends State<PesananPage> {
                               direction: DismissDirection.endToStart,
                               background: Container(
                                 alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 16,
                                   vertical: 6,
@@ -170,7 +181,10 @@ class _PesananPageState extends State<PesananPage> {
                                   color: Colors.red.shade400,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: const Icon(Icons.delete, color: Colors.white),
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
                               ),
                               confirmDismiss: (_) async {
                                 await _confirmDelete(order);
@@ -213,8 +227,11 @@ class _PesananPageState extends State<PesananPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.shopping_bag_outlined,
-                        size: 56, color: Colors.grey.shade400),
+                    Icon(
+                      Icons.shopping_bag_outlined,
+                      size: 56,
+                      color: Colors.grey.shade400,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'Belum ada pesanan',
@@ -224,7 +241,10 @@ class _PesananPageState extends State<PesananPage> {
                     const SizedBox(height: 4),
                     Text(
                       'Ketuk "Pilih Produk" untuk mulai memesan barang',
-                      style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 12,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -269,8 +289,10 @@ class _TotalCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(Icons.shopping_bag_outlined,
-                color: Theme.of(context).colorScheme.onPrimaryContainer),
+            Icon(
+              Icons.shopping_bag_outlined,
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
