@@ -69,18 +69,16 @@ class HomePage extends StatelessWidget {
               icon: Icons.person_outline,
               title: 'Menu Profile',
               subtitle: 'Data akun & ringkasan belanja kamu',
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ProfilePage()),
-              ),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const ProfilePage())),
             ),
             const SizedBox(height: 12),
             _MenuTile(
               icon: Icons.shopping_bag_outlined,
               title: 'Menu Pesanan',
               subtitle: 'Pilih barang & jumlahnya, masuk ke keranjang',
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const PesananPage()),
-              ),
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const PesananPage())),
             ),
             const SizedBox(height: 12),
             _MenuTile(
@@ -104,10 +102,10 @@ class HomePage extends StatelessWidget {
             _MenuTile(
               icon: Icons.calendar_month_outlined,
               title: 'Menu Konversi Tanggal & Kalender',
-              subtitle: 'Belum tersedia (masih dikosongkan)',
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const KonversiPage()),
-              ),
+              subtitle: 'Konversi Menu',
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const KonversiPage())),
             ),
           ],
         ),
