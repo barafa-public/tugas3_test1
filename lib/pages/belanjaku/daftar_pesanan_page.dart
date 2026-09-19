@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tugas3_test/models/order_model.dart';
 import 'package:tugas3_test/services/order_service.dart';
 import 'package:tugas3_test/utils/currency_formatter.dart';
+
 import 'widgets/order_card.dart';
 
 /// Menu Daftar Pesanan.
@@ -35,7 +36,9 @@ class _DaftarPesananPageState extends State<DaftarPesananPage> {
   Future<void> _refresh() async {
     if (!mounted) return;
     final next = _load();
-    setState(() => _future = next);
+    setState(() {
+      _future = next;
+    });
     await next;
   }
 
@@ -72,7 +75,9 @@ class _DaftarPesananPageState extends State<DaftarPesananPage> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal membayar "${order.name}": ${_friendlyError(e)}')),
+        SnackBar(
+          content: Text('Gagal membayar "${order.name}": ${_friendlyError(e)}'),
+        ),
       );
     }
   }
@@ -106,7 +111,11 @@ class _DaftarPesananPageState extends State<DaftarPesananPage> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menghapus "${order.name}": ${_friendlyError(e)}')),
+        SnackBar(
+          content: Text(
+            'Gagal menghapus "${order.name}": ${_friendlyError(e)}',
+          ),
+        ),
       );
     }
   }
@@ -145,7 +154,9 @@ class _DaftarPesananPageState extends State<DaftarPesananPage> {
                     const SizedBox(height: 12),
                     FilledButton(
                       onPressed: _refresh,
-                      child: Text(isSessionExpired ? 'Muat Ulang' : 'Coba Lagi'),
+                      child: Text(
+                        isSessionExpired ? 'Muat Ulang' : 'Coba Lagi',
+                      ),
                     ),
                   ],
                 ),
@@ -160,7 +171,8 @@ class _DaftarPesananPageState extends State<DaftarPesananPage> {
             onRefresh: _refresh,
             child: Column(
               children: [
-                if (orders.isNotEmpty) _TotalCard(total: total, itemCount: orders.length),
+                if (orders.isNotEmpty)
+                  _TotalCard(total: total, itemCount: orders.length),
                 Expanded(
                   child: orders.isEmpty
                       ? _buildEmptyState()
@@ -200,7 +212,11 @@ class _DaftarPesananPageState extends State<DaftarPesananPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.list_alt_outlined, size: 56, color: Colors.grey.shade400),
+                    Icon(
+                      Icons.list_alt_outlined,
+                      size: 56,
+                      color: Colors.grey.shade400,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'Belum ada pesanan yang menunggu pembayaran',
@@ -210,7 +226,10 @@ class _DaftarPesananPageState extends State<DaftarPesananPage> {
                     const SizedBox(height: 4),
                     Text(
                       'Tambahkan barang lewat Menu Pesanan terlebih dahulu',
-                      style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 12,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -253,8 +272,10 @@ class _TotalCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(Icons.receipt_long_outlined,
-                color: Theme.of(context).colorScheme.onPrimaryContainer),
+            Icon(
+              Icons.receipt_long_outlined,
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
