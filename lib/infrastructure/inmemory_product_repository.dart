@@ -3,9 +3,9 @@ import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
 import 'package:uuid/uuid.dart';
 
 class InmemoryProductRepository implements ProductRepositoryInterface {
-  InmemoryProductRepository(this.loadingTimeInSecond);
+  InmemoryProductRepository(this.loadingTimeInMiliseconds);
   List<Product> rows = [];
-  int loadingTimeInSecond;
+  int loadingTimeInMiliseconds;
 
   @override
   void insert(Product product) {
@@ -14,13 +14,13 @@ class InmemoryProductRepository implements ProductRepositoryInterface {
 
   @override
   Future<Product?> getbyIdAsync(Uuid productId) async {
-    await Future.pause(Duration(seconds: loadingTimeInSecond));
+    await Future.pause(Duration(milliseconds: loadingTimeInMiliseconds));
     return rows.where((product) => product.id == productId).first;
   }
 
   @override
   Future<List<Product>> getAllAsync() async {
-    await Future.pause(Duration(seconds: loadingTimeInSecond));
+    await Future.pause(Duration(milliseconds: loadingTimeInMiliseconds));
 
     return rows;
   }

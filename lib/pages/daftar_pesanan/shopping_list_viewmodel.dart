@@ -30,6 +30,8 @@ class ShoppingListViewmodel {
       error = "a certain product has no status specified";
     }
 
-    return productList;
+    return productList
+        .where((product) => product.status != ProductStatus.finished)
+        .toList();
   }
 }
