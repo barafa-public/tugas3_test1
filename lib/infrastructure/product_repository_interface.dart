@@ -2,9 +2,11 @@ import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
 import 'package:uuid/uuid.dart';
 
 abstract interface class ProductRepositoryInterface {
-  void insert(Product product);
+  void insert(Order product);
 
-  Future<Product?> getbyIdAsync(Uuid productId);
+  Future<Order?> getbyIdAsync(Uuid productId);
 
-  Future<List<Product>> getAllAsync();
+  Future<List<Order>> getAllAsync();
+
+  Future<void> update(Order updatedOrder);
 }

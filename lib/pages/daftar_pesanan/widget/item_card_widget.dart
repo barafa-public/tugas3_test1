@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 class ItemCardWidget extends StatelessWidget {
   const ItemCardWidget(this.product, this.onTap, {super.key});
 
-  final Product product;
+  final Order product;
   final void Function(Uuid productId) onTap;
 
   // Local-only styling to match _MenuTile in home_page.dart.

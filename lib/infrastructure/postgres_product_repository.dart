@@ -4,19 +4,25 @@ import 'package:uuid/uuid.dart';
 
 class PostgresProductRepository implements ProductRepositoryInterface {
   @override
-  Future<List<Product>> getAllAsync() {
+  Future<List<Order>> getAllAsync() {
     // TODO: implement getAllAsync
     throw UnimplementedError();
   }
 
   @override
-  Future<Product?> getbyIdAsync(Uuid productId) {
+  Future<Order?> getbyIdAsync(Uuid productId) {
     // TODO: implement getbyIdAsync
     throw UnimplementedError();
   }
 
   @override
-  void insert(Product product) {
+  void insert(Order product) {
     // TODO: implement insert
+  }
+
+  @override
+  Future<void> update(Order updatedOrder) {
+    // TODO: implement update
+    throw UnimplementedError();
   }
 }

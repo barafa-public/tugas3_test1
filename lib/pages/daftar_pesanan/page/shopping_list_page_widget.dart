@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tugas3_test/infrastructure/inmemory_product_repository.dart';
 import 'package:tugas3_test/infrastructure/postgres_product_repository.dart';
+import 'package:tugas3_test/infrastructure/product_repository_interface.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 import 'package:tugas3_test/pages/daftar_pesanan/shopping_list_viewmodel.dart';
@@ -16,7 +17,12 @@ class ShoppingListPageWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _ShoppingListPageWidgetState();
 }
 
-void showProductDetail(BuildContext context, Product product) {
+void showProductDetail(
+  BuildContext context,
+  Order order,
+  ShoppingListViewmodel viewModel, {
+  required Future<void> Function() onFinished,
+}) {
   showAppBottomSheet<void>(
     context: context,
     child: Builder(
@@ -36,7 +42,7 @@ void showProductDetail(BuildContext context, Product product) {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  product.name,
+                  order.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -46,7 +52,7 @@ void showProductDetail(BuildContext context, Product product) {
                 ),
               ),
               const SizedBox(width: 12),
-              StatusChipWidget(product.status),
+              StatusChipWidget(order.status),
             ],
           ),
           const SizedBox(height: 12),
@@ -55,45 +61,63 @@ void showProductDetail(BuildContext context, Product product) {
           _DetailRow(
             icon: Icons.inventory_2_outlined,
             label: 'Jumlah',
-            value: '${product.quantity}',
+            value: '${order.quantity}',
           ),
           const SizedBox(height: 12),
           _DetailRow(
             icon: Icons.payments_outlined,
             label: 'Harga satuan',
-            value: formatRupiah(product.price),
+            value: formatRupiah(order.price),
           ),
           const SizedBox(height: 12),
           _DetailRow(
             icon: Icons.calendar_month_outlined,
             label: 'Tanggal pemesanan',
-            value: product.createdAt == null
+            value: order.createdAt == null
                 ? '-'
-                : formatTanggalPendek(product.createdAt!),
+                : formatTanggalPendek(order.createdAt!),
           ),
           const SizedBox(height: 12),
           _DetailRow(
             icon: Icons.update_outlined,
             label: 'Terakhir diupdate',
-            value: product.updatedAt == null
+            value: order.updatedAt == null
                 ? '-'
-                : formatTanggalPendek(product.updatedAt!),
+                : formatTanggalPendek(order.updatedAt!),
           ),
           const SizedBox(height: 12),
           _DetailRow(
             icon: Icons.local_shipping_outlined,
             label: 'Tanggal dikirim',
-            value: product.completedAt == null
+            value: order.completedAt == null
                 ? '-'
-                : formatTanggalPendek(product.completedAt!),
+                : formatTanggalPendek(order.completedAt!),
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () => Navigator.of(innerContext).pop(),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            child: const Text('Tutup'),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(innerContext).pop(),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text('Tutup'),
+                ),
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await viewModel.markAsFinished(order);
+                    if (innerContext.mounted) {
+                      Navigator.of(innerContext).pop();
+                    }
+                    await onFinished();
+                  },
+                  child: const Text("selesai"),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -144,24 +168,28 @@ class _DetailRow extends StatelessWidget {
 }
 
 class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
-  late InmemoryProductRepository repository;
+  late ProductRepositoryInterface repository;
   ShoppingListViewmodel? viewModel;
 
-  var cardData = <Product>[];
+  var cardData = <Order>[];
 
   Future<void> _loadCardList() async {
     final useInMemory = true;
     repository = useInMemory
-        ? InmemoryProductRepository(5)
+        ? InmemoryProductRepository(5000)
         // ignore: dead_code
-        : PostgresProductRepository() as InmemoryProductRepository;
+        : PostgresProductRepository();
 
     viewModel = ShoppingListViewmodel(repository);
 
     repository.insert(
-      Product(name: "flores bajawa", status: ProductStatus.processed),
+      Order(name: "flores bajawa", status: ProductStatus.processed),
     );
 
+    await _refreshCardList();
+  }
+
+  Future<void> _refreshCardList() async {
     cardData = await viewModel!.displayCardDataAsync();
 
     if (!mounted) return;
@@ -230,7 +258,12 @@ class _ShoppingListPageWidgetState extends State<ShoppingListPageWidget> {
         final product = cardData[index - 1];
         return ItemCardWidget(
           product,
-          (id) => showProductDetail(context, product),
+          (id) => showProductDetail(
+            context,
+            product,
+            viewModel!,
+            onFinished: _refreshCardList,
+          ),
         );
       },
     );

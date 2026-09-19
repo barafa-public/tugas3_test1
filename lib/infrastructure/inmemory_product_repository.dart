@@ -4,24 +4,35 @@ import 'package:uuid/uuid.dart';
 
 class InmemoryProductRepository implements ProductRepositoryInterface {
   InmemoryProductRepository(this.loadingTimeInMiliseconds);
-  List<Product> rows = [];
+  List<Order> rows = [];
   int loadingTimeInMiliseconds;
 
   @override
-  void insert(Product product) {
+  void insert(Order product) {
     rows.add(product);
   }
 
   @override
-  Future<Product?> getbyIdAsync(Uuid productId) async {
+  Future<Order?> getbyIdAsync(Uuid productId) async {
     await Future.pause(Duration(milliseconds: loadingTimeInMiliseconds));
     return rows.where((product) => product.id == productId).first;
   }
 
   @override
-  Future<List<Product>> getAllAsync() async {
+  Future<List<Order>> getAllAsync() async {
     await Future.pause(Duration(milliseconds: loadingTimeInMiliseconds));
 
     return rows;
+  }
+
+  @override
+  Future<void> update(Order updatedOrder) async {
+    rows.map((order) {
+      if (order.id != updatedOrder.id) {
+        return;
+      }
+
+      order = updatedOrder;
+    });
   }
 }

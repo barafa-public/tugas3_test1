@@ -11,14 +11,14 @@ class ShoppingListViewmodel {
 
   ShoppingListViewmodel(this.repo);
 
-  ShoppinglistCardData toCardData(Product product) {
+  ShoppinglistCardData toCardData(Order product) {
     return ShoppinglistCardData(
       product.name,
       product.status.getDisplayString(),
     );
   }
 
-  Future<List<Product>> displayCardDataAsync() async {
+  Future<List<Order>> displayCardDataAsync() async {
     final productList = await repo.getAllAsync();
     isLoading = false;
 
@@ -33,5 +33,13 @@ class ShoppingListViewmodel {
     return productList
         .where((product) => product.status != ProductStatus.finished)
         .toList();
+  }
+
+  Future<void> markAsFinished(Order order) async {
+    var updatedOrder = order;
+    updatedOrder.status = ProductStatus.finished;
+
+    await repo.update(order);
+    isLoading = false;
   }
 }

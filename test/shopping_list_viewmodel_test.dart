@@ -14,7 +14,7 @@ void main() {
   });
 
   test("when repository is still fetching, should be in loading state", () {
-    repo.insert(Product(name: "flores bajawa", status: ProductStatus.finished));
+    repo.insert(Order(name: "flores bajawa", status: ProductStatus.finished));
 
     final _ = viewModel.displayCardDataAsync();
 
@@ -24,9 +24,7 @@ void main() {
   test(
     "when repository finishes fetching, should not be in loading state",
     () async {
-      repo.insert(
-        Product(name: "flores bajawa", status: ProductStatus.finished),
-      );
+      repo.insert(Order(name: "flores bajawa", status: ProductStatus.finished));
 
       final _ = await viewModel.displayCardDataAsync();
 
@@ -35,9 +33,7 @@ void main() {
   );
 
   test("when displaying card data, should show status and name", () async {
-    repo.insert(
-      Product(name: "flores bajawa", status: ProductStatus.processed),
-    );
+    repo.insert(Order(name: "flores bajawa", status: ProductStatus.processed));
 
     final cardData = await viewModel.displayCardDataAsync();
 
@@ -46,7 +42,7 @@ void main() {
   });
 
   test("error should exists when trying to display card data to an item that has no name", () async {
-    repo.insert(Product(status: ProductStatus.finished));
+    repo.insert(Order(status: ProductStatus.finished));
 
     final _ = await viewModel.displayCardDataAsync();
 
@@ -55,7 +51,7 @@ void main() {
   });
 
   test("error should exists when trying to display card data to an item that has no status", () async {
-    repo.insert(Product(name: "flores bajawa"));
+    repo.insert(Order(name: "flores bajawa"));
 
     final _ = await viewModel.displayCardDataAsync();
 
@@ -70,12 +66,30 @@ void main() {
   });
 
   test("any orders that are finished, should not be in the list", () async {
-    repo.insert(Product(name: "flores bajawa", status: ProductStatus.finished));
+    repo.insert(Order(name: "flores bajawa", status: ProductStatus.finished));
     final cardData = await viewModel.displayCardDataAsync();
 
     assert(
       cardData.any((product) => product.status == ProductStatus.finished) ==
           false,
+    );
+  });
+
+  test("any orders that are not finished, can be marked as finished", () async {
+    final order = Order(
+      name: "flores bajawa",
+      status: ProductStatus.onDelivery,
+    );
+    repo.insert(order);
+
+    viewModel.markAsFinished(order);
+
+    final cardData = await viewModel.displayCardDataAsync();
+
+    assert(
+      cardData
+          .where((product) => product.status == ProductStatus.finished)
+          .isEmpty,
     );
   });
 }

@@ -1,7 +1,7 @@
 import 'package:tugas3_test/pages/daftar_pesanan/entity/product_status.dart';
 import 'package:uuid/uuid.dart';
 
-class Product {
+class Order {
   Uuid id = Uuid();
   String name = "";
   int quantity = 0;
@@ -11,7 +11,7 @@ class Product {
   DateTime? updatedAt = DateTime.now();
   DateTime? completedAt = DateTime.now();
 
-  Product({
+  Order({
     this.id = const Uuid(),
     this.name = "",
     this.quantity = 0,
